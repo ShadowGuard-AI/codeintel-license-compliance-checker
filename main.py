@@ -1,6 +1,7 @@
 import argparse
 import logging
 import os
+import re
 import subprocess
 import json
 import sys
@@ -40,7 +41,11 @@ class LicenseComplianceChecker:
             subprocess.CalledProcessError: If the command returns a non-zero exit code.
         """
         try:
-            process = subprocess.run(command, cwd=self.project_path, capture_output=True, text=True, check=True)
+            # Commands arrive as pip arguments and run through this
+            # interpreter's own pip module. A bare "pip" from PATH can
+            # belong to a different Python, and then every license in
+            # the report describes the wrong environment.
+            process = subprocess.run([sys.executable, '-m', 'pip'] + command, cwd=self.project_path, capture_output=True, text=True, check=True)
             return process.stdout.strip()
         except subprocess.CalledProcessError as e:
             logging.error(f"Command failed: {e}")
@@ -48,13 +53,36 @@ class LicenseComplianceChecker:
 
     def _get_dependencies(self) -> None:
         """
-        Retrieves the list of dependencies for the project using pip freeze.
+        Retrieves the list of dependencies for the project.
+
+        A requirements.txt in the project directory names the project's
+        own dependencies, so it wins when present. pip freeze is only a
+        fallback: it lists whatever is installed in this environment,
+        which for an empty project directory is a report about the
+        wrong thing. That fallback is kept because a project with no
+        manifest has nothing else to go on, and the warning below says
+        when it is in use.
         """
+        requirements = os.path.join(self.project_path, 'requirements.txt')
+        if os.path.isfile(requirements):
+            with open(requirements, 'r') as f:
+                for raw_line in f:
+                    line = raw_line.split('#', 1)[0].strip()
+                    if not line or line.startswith('-'):
+                        continue
+                    package_name = re.split(r'==|>=|<=|~=|!=|>|<|\[|;', line, maxsplit=1)[0].strip()
+                    package_version = 'unspecified'
+                    if '==' in line:
+                        package_version = line.split('==', 1)[1].split(';')[0].strip()
+                    if package_name:
+                        self.dependencies[package_name] = {'version': package_version}
+            return
+        logging.warning("No requirements.txt in project path; reporting the current environment from pip freeze instead.")
         try:
-            output = self._execute_command(['pip', 'freeze'])
+            output = self._execute_command(['freeze'])
             for line in output.splitlines():
                 if '==' in line:
-                    package_name, package_version = line.split('==')
+                    package_name, package_version = line.split('==', 1)
                     self.dependencies[package_name] = {'version': package_version}
         except subprocess.CalledProcessError:
             logging.error("Failed to retrieve dependencies using pip freeze.")
@@ -69,7 +97,7 @@ class LicenseComplianceChecker:
             package_name (str): The name of the package.
         """
         try:
-            output = self._execute_command(['pip', 'show', package_name])
+            output = self._execute_command(['show', package_name])
             license_info = "UNKNOWN"
             for line in output.splitlines():
                 if line.lower().startswith('license:'):
@@ -159,13 +187,3 @@ def main() -> None:
 if __name__ == "__main__":
     main()
 
-# Usage examples (not executable within the script, but demonstrate command-line usage):
-#
-# 1. Run the checker on a project in the 'my_project' directory and output the report in text format:
-#    python main.py my_project
-#
-# 2. Run the checker and output the report in JSON format:
-#    python main.py my_project --output_format json
-#
-# 3. Run the checker and set the logging level to DEBUG:
-#    python main.py my_project --log_level DEBUG

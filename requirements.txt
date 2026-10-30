@@ -1,4 +1,4 @@
-bandit>=1.0.0
-flake8>=1.0.0
-pylint>=1.0.0
-pyre-check>=1.0.0
+# No third-party packages: main.py uses only the Python standard library
+# and runs pip as a module of the interpreter it is started with.
+# The bandit, flake8, pylint and pyre-check entries that stood here
+# before were never imported or run by this tool.
