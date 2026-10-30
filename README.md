@@ -1,3 +1,5 @@
+![Banner](banner.png)
+
 # codeintel-License-Compliance-Checker
 Scans a project's dependencies and lists their licenses, highlighting potential compliance issues. - Focused on Tools for static code analysis, vulnerability scanning, and code quality assurance
 
