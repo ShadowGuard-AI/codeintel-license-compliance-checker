@@ -98,15 +98,29 @@ class LicenseComplianceChecker:
         """
         try:
             output = self._execute_command(['show', package_name])
-            license_info = "UNKNOWN"
+            license_info = ""
+            license_expression = ""
             for line in output.splitlines():
-                if line.lower().startswith('license:'):
-                    license_info = line.split(':', 1)[1].strip()
-                    break  # Stop at the first License entry
-                elif line.lower().startswith('home-page:'):
-                    homepage = line.split(':', 1)[1].strip()
-                    self.dependencies[package_name]['homepage'] = homepage
-            self.dependencies[package_name]['license'] = license_info
+                key, _, value = line.partition(':')
+                key = key.strip().lower()
+                value = value.strip()
+                if key == 'license':
+                    license_info = value
+                elif key == 'license-expression':
+                    license_expression = value
+                elif key == 'home-page' and value:
+                    # pip prints an empty Home-page for packages that
+                    # declare none. Storing that empty string would make
+                    # the report print a blank instead of falling back
+                    # to UNKNOWN, so only a real value is kept.
+                    self.dependencies[package_name]['homepage'] = value
+            # PEP 639 packages carry no License line at all: modern pip
+            # prints only License-Expression, an SPDX expression such
+            # as "Apache-2.0 AND MIT". Without this fallback every such
+            # package reported UNKNOWN even though pip had just printed
+            # its license. The legacy field wins when it has a value,
+            # because it is the only field older packages declare.
+            self.dependencies[package_name]['license'] = license_info or license_expression or "UNKNOWN"
         except subprocess.CalledProcessError:
             logging.warning(f"Failed to retrieve license information for {package_name}.")
             self.dependencies[package_name]['license'] = "UNKNOWN"
