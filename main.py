@@ -10,6 +10,27 @@ from typing import List, Dict, Any
 # Configure logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
+# License strings that get flagged in the report. UNKNOWN means pip
+# reported no license, so there is nothing to check compliance
+# against. The copyleft family strings carry conditions that a
+# permissive license does not, so they are flagged for a human to
+# look at, not judged non compliant by this tool.
+COPYLEFT_MARKERS = ("AGPL", "LGPL", "GPL", "MPL", "EPL", "CDDL")
+
+def flag_reason(license_text):
+    """
+    Returns a plain reason string when a license should be flagged
+    in the report, or None when it should not.
+    """
+    text = (license_text or "").strip()
+    if not text or text.upper() == "UNKNOWN":
+        return "UNKNOWN license, no license was reported for this package"
+    upper = text.upper()
+    for marker in COPYLEFT_MARKERS:
+        if marker in upper:
+            return f"copyleft license family ({marker}), check its conditions before use"
+    return None
+
 class LicenseComplianceChecker:
     """
     Scans a project's dependencies and lists their licenses, highlighting potential compliance issues.
@@ -145,14 +166,33 @@ class LicenseComplianceChecker:
             str: The report in the specified output format.
         """
         if self.output_format == "json":
-            return json.dumps(self.dependencies, indent=4)
+            enriched = {}
+            flagged = 0
+            for package_name, info in self.dependencies.items():
+                entry = dict(info)
+                reason = flag_reason(entry.get('license', 'UNKNOWN'))
+                entry['compliance_flag'] = reason
+                if reason:
+                    flagged += 1
+                enriched[package_name] = entry
+            enriched['_flagged_count'] = flagged
+            return json.dumps(enriched, indent=4)
         else:  # Default to text
             report = "License Compliance Report:\n"
+            flagged_names = []
             for package_name, info in self.dependencies.items():
                 report += f"\nPackage: {package_name}\n"
                 report += f"  Version: {info.get('version', 'UNKNOWN')}\n"
                 report += f"  License: {info.get('license', 'UNKNOWN')}\n"
                 report += f"  Homepage: {info.get('homepage', 'UNKNOWN')}\n"
+                reason = flag_reason(info.get('license', 'UNKNOWN'))
+                if reason:
+                    flagged_names.append(package_name)
+                    report += f"  FLAGGED: {reason}\n"
+            report += f"\nFlagged: {len(flagged_names)} of {len(self.dependencies)} packages need a compliance look"
+            if flagged_names:
+                report += f" ({', '.join(flagged_names)})"
+            report += "\n"
             return report
 
 def setup_argparse() -> argparse.ArgumentParser:
