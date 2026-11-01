@@ -27,6 +27,10 @@ def flag_reason(license_text):
         return "UNKNOWN license, no license was reported for this package"
     upper = text.upper()
     for marker in COPYLEFT_MARKERS:
+        # I match by substring, so a license text that merely mentions
+        # GPL while explaining it does not apply still gets flagged.
+        # I would rather flag a mention for a human than miss a real
+        # copyleft grant hiding in a longer string.
         if marker in upper:
             return f"copyleft license family ({marker}), check its conditions before use"
     return None
@@ -156,6 +160,9 @@ class LicenseComplianceChecker:
         """
         self._get_dependencies()
         for package_name in self.dependencies:
+            # I run one pip show per package, in order. A project with a
+            # long requirements file is slow in direct proportion, and a
+            # package pip cannot find simply lands as UNKNOWN below.
             self._get_license_info(package_name)
 
     def generate_report(self) -> str:
@@ -232,6 +239,9 @@ def main() -> None:
     try:
         checker.scan_licenses()
         report = checker.generate_report()
+        # I print the report and exit normally even when packages are
+        # flagged. The flag is advice to read the license, not a
+        # verdict from this tool, so it does not become an exit code.
         print(report)  # Output to stdout
     except Exception as e:
         logging.error(f"An error occurred: {e}")
