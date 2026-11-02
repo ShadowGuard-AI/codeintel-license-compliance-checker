@@ -3,164 +3,61 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Codeintel License Compliance Checker: what it is, how it runs, where it stops</title>
-<meta name="description" content="Codeintel License Compliance Checker is one of my projects. The README in the repo is short, so this page sticks to what the files themselves show.">
-<style>
-:root {
-  --bg: #1a0c0c; --panel: #2a1412; --ink: #f0e6d6;
-  --mut: #381b18;
-  --acc: #c9a24b; --acc2: #94b2c4;
-  --line: #2a1412;
-}
-* { box-sizing: border-box; }
-body { margin: 0; background: var(--bg); color: var(--ink);
-  font-family: Verdana, Geneva, sans-serif; line-height: 1.55; }
-code, pre, .mono { font-family: 'Lucida Console', monospace; }
-a { color: var(--acc2); }
-.hero { padding: 3rem 6vw 1rem; }
-.hero img.banner { width: 100%; height: auto; border: 1px solid var(--line);
-  border-radius: 10px; }
-.logo { width: 92px; height: 92px; border-radius: 18px;
-  border: 1px solid var(--line); }
-h1 { font-size: 2.4rem; margin: 0.4em 0 0.1em; }
-h2 { border-bottom: 2px solid var(--acc); padding-bottom: 0.2em;
-  margin-top: 2em; }
-.lede { font-size: 1.15rem; max-width: 62ch; }
-main { padding: 0 6vw 3rem; max-width: 1180px; margin: 0 auto; }
-.grid { display: grid; gap: 1rem;
-  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); }
-.card { background: var(--panel); border: 1px solid var(--line);
-  border-radius: 12px; padding: 1rem 1.2rem; }
-.card.pop { animation: rise 0.7s ease both; }
-@keyframes rise { from { opacity: 0; transform: translateY(14px); }
-  to { opacity: 1; transform: none; } }
-pre.code { background: #101014; color: #e8e6df; padding: 1rem 1.2rem;
-  border-radius: 12px; overflow-x: auto; font-size: 0.86rem;
-  border-left: 5px solid var(--acc); }
-table { border-collapse: collapse; width: 100%; }
-td, th { border-bottom: 1px solid var(--line); padding: 0.45rem 0.6rem;
-  text-align: left; }
-.shots { display: grid; gap: 1rem;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
-.shots img { width: 100%; height: auto; border: 1px solid var(--line);
-  border-radius: 10px; background: #f4f1e8; }
-footer { padding: 2rem 6vw; border-top: 1px solid var(--line);
-  color: var(--mut); }
-.rail { display: flex; gap: 1.2rem; align-items: flex-start; }
-.rail nav { position: sticky; top: 1rem; min-width: 180px; }
-@media (max-width: 760px) { .rail { flex-direction: column; }
-  .rail nav { position: static; } }
-@media (prefers-reduced-motion: reduce) {
-  .card.pop { animation: none; } * { scroll-behavior: auto; } }
-</style>
+<title>codeintel-license-compliance-checker: The Pawnbroker's Pledge Book</title>
+<style>@font-face{font-family:'Bellota Text';src:url('fonts/BellotaText.ttf') format('truetype');}@font-face{font-family:'Alegreya Sans';src:url('fonts/AlegreyaSans.ttf') format('truetype');}:root{--ground:#f3ead3;--panel:#e9dcbc;--head:#141210;--ink:#1d1a16;--gilt:#b9973f;--red:#a62b25}*{box-sizing:border-box}body{margin:0;background:var(--ground);color:var(--ink);font-family:'Alegreya Sans',sans-serif;line-height:1.6}h1,h2,h3{font-family:'Bellota Text',serif;color:var(--head)}.hero img.heroimg{width:100%;height:48vh;object-fit:cover;display:block}.hero .in,main,footer{max-width:1120px;margin:0 auto;padding:1rem 6vw 2rem}.logo{width:200px}.btn{display:inline-block;text-decoration:none;font-family:'Bellota Text',serif;color:var(--head);background:var(--panel);border:2px solid var(--gilt);border-radius:4px;padding:.7rem 1.2rem;margin:.2rem}.btn:hover{border-top:4px solid var(--gilt)}.btn:active{transform:translateY(2px)}.btn:focus-visible{outline:3px solid var(--gilt);outline-offset:3px}.plate{background:var(--panel);padding:.4rem 1.5rem 1.3rem;margin:1.8rem 0;border-top:3px solid var(--gilt)}pre{background:#241f18;color:#f4f2ea;padding:1rem;overflow-x:auto;white-space:pre-wrap}.callout{border-left:6px solid var(--red);padding:.2rem 1.2rem 1rem;margin:1.2rem 0;background:#f8f2df}.flag{border:2px solid var(--red);padding:.2rem 1.2rem 1rem;margin:1.2rem 0}.entry{display:flex;gap:1rem;padding:.5rem 0;border-bottom:1px solid var(--gilt)}.entry b{min-width:230px}a{color:var(--head)}</style>
 </head>
-<body class="layout-term">
-<!-- This page exists for codeintel-license-compliance-checker alone: the layout (terminal-frame),
-     the colors, and the type were picked for this project, not
-     shared with the other project pages. The code block below is
-     copied from the file it names, line for line. If it looks
-     plain, that is because the project is plain, and I would
-     rather the page match the project than dress it up. The one
-     thing I will not do here is oversell: what this project does
-     not do is stated on the page, not hidden from it. -->
+<body>
 <header class="hero">
-  <img class="logo" src="assets/logo.png" alt="Codeintel License Compliance Checker logo">
-  <img class="banner" src="assets/banner.png" alt="">
-  <h1>Codeintel License Compliance Checker</h1>
-  <p class="mono"><a href="https://github.com/ShadowGuard-AI/codeintel-license-compliance-checker">github.com/ShadowGuard-AI/codeintel-license-compliance-checker</a></p>
+<img class="heroimg" src="assets/intro-banner.png" alt="Introduction view for codeintel-license-compliance-checker, scenery first, no lettering">
+<div class="in">
+<img class="logo" src="assets/logo.png" alt="Themed mark for codeintel-license-compliance-checker">
+<h1>codeintel-license-compliance-checker</h1>
+<p>Laid out as a day book. One entry per matter. Short lines. No entry padded. Gilt is for numbers only, and seat red is for a flagged line only.</p>
+</div>
 </header>
-
 <main>
-  <section class="rail">
-    <nav aria-label="on this page">
-      <p class="mono"><a href="#run">Run it</a><br>
-      <a href="#files">The files</a><br>
-      <a href="#sheets">The sheets</a><br>
-      <a href="https://github.com/ShadowGuard-AI/codeintel-license-compliance-checker">The repo</a></p>
-    </nav>
-    <div>
-      <p class="lede">Codeintel License Compliance Checker is one of my projects. The README in the repo is short, so this page sticks to what the files themselves show.</p>
-      <div class="grid">
-        <div class="card pop"><h3>What it is</h3>
-          <p>Codeintel License Compliance Checker: 5 files, 225 counted
-          lines across Python 203, Markdown 18, Text 4. One job, done in the
-          open, in files you can read.</p></div>
-        <div class="card pop"><h3>The biggest piece</h3>
-          <p><code>main.py</code> carries the most
-          lines. If the project grows, that file is where the growth
-          lands first, for better or worse.</p></div>
-        <div class="card pop"><h3>The honest gap</h3>
-          <p>No test files yet. That is the honest gap, and the roadmap in the visuals folder says what the first one should cover.</p></div>
-      </div>
-      <section id="run">
-        <h2>Run it</h2>
-        <p>The repo README has the exact commands for this one. The
-        shape is the shape for most of my projects: clone it, read the
-        top file first so you know what will happen, then run it on
-        something you do not mind breaking.</p>
-        <p class="mono">$ git clone https://github.com/ShadowGuard-AI/codeintel-license-compliance-checker.git<br>$ cd codeintel-license-compliance-checker</p>
-      </section>
-      
-  <section aria-label="real code">
-    <h2>The code, as it sits in the repo</h2>
-    <p>From <code>main.py</code>, line 11 on. I did
-    not tidy it for the page. What you see is what the file has.</p>
-    <pre class="code"><code>logging.basicConfig(level=logging.INFO, format=&#x27;%(asctime)s - %(levelname)s - %(message)s&#x27;)
-
-class LicenseComplianceChecker:
-    &quot;&quot;&quot;
-    Scans a project&#x27;s dependencies and lists their licenses, highlighting potential compliance issues.
-    &quot;&quot;&quot;
-
-    def __init__(self, project_path: str, output_format: str = &quot;text&quot;):
-        &quot;&quot;&quot;
-        Initializes the LicenseComplianceChecker.
-
-        Args:
-            project_path (str): The path to the project directory.
-            output_format (str): The format for output (text or json). Defaults to &quot;text&quot;.
-        &quot;&quot;&quot;
-        self.project_path = project_path
-        self.output_format = output_format
-        self.dependencies = {}  # type: Dict[str, Dict[str, Any]]
-
-    def _execute_command(self, command: List[str]) -&gt; str:
-        &quot;&quot;&quot;
-        Executes a shell command and returns the output.</code></pre>
-  </section>
-      <section id="files">
-        <h2>The files that matter</h2>
-        <table><tr><th>File</th><th>Lines</th></tr>
-        <tr><td><code>main.py</code></td><td>203</td></tr>
-        <tr><td><code>README.md</code></td><td>18</td></tr>
-        <tr><td><code>requirements.txt</code></td><td>4</td></tr>
-        <tr><td><code>banner.png</code></td><td>0</td></tr>
-        <tr><td><code>logo.png</code></td><td>0</td></tr>
-        </table>
-        <p>Names doing the work: <span class="mono">LicenseComplianceChecker, setup_argparse, main, __init__, _execute_command, _get_dependencies, _get_license_info, scan_licenses</span>.</p>
-      </section>
-      <section id="sheets">
-        <h2>Drawn by hand</h2>
-        <p>I sketch my projects on notebook paper so I have to
-        understand them well enough to draw them. The full set,
-        with the counts and how they were counted, is the
-        <a href="https://github.com/ShadowGuard-AI/codeintel-license-compliance-checker/tree/main/codeintel-license-compliance-checker-Visuals">codeintel-license-compliance-checker-Visuals</a>
-        folder in the repo. Nothing is drawn over the binder holes.
-        That is a rule, not a style.</p>
-        <div class="shots">
-          <img src="assets/architecture.png" alt="Hand drawn architecture sheet for Codeintel License Compliance Checker">
-          <img src="assets/flowchart.png" alt="Hand drawn flowchart sheet for Codeintel License Compliance Checker">
-          <img src="assets/product-map.png" alt="Hand drawn product map sheet for Codeintel License Compliance Checker">
-        </div>
-      </section>
-    </div>
-  </section>
+<nav><a class="btn" href="#s5">List the Licences</a><a class="btn" href="#s5">Set the Report Form</a><a class="btn" href="#s5">Set the Log Level</a><a class="btn" href="#s5">Show Help</a></nav>
+<section class="plate" id="s0"><h2>Entered in the Book</h2><p>It reads a project's dependencies. It finds the licence reported for each one. It prints a list. It marks some entries for a human to look at.</p></section>
+<section class="plate" id="s1"><h2>Names from the Requirements File</h2><p>A requirements.txt in the project directory wins. Its lines are read first. Comments are cut. Blank lines pass. Lines starting with a dash are skipped, so an included file line is not read as a package. A name is taken up to the first version mark, extras bracket, or environment marker. A version is recorded only where the line pins one with a double equals sign. Otherwise the version stands as unspecified.</p><div class="callout"><h3>No Requirements File Means a Report About This Machine</h3><p>No requirements.txt. Then a warning is printed. Then the current environment is reported instead, from pip freeze. That report describes the environment, not the project. A freeze that fails ends the run. Exit 1.</p></div></section>
+<section class="plate" id="s2"><h2>One Package at a Time</h2><p>One pip show per package. In order. Slow in direct proportion to the list. The pip used is this interpreter's own pip, run as a module. Not a bare pip found on the path. A different Python would give a different shop's stock. The licence line is taken first. Failing that, the licence expression line, held in the code as License-Expression. Failing both, the entry stands as UNKNOWN. A home page is kept only where one is actually printed.</p></section>
+<section class="plate" id="s3"><h2>Installation, as printed, flagged not corrected</h2><pre>git clone https://github.com/ShadowStrikeHQ/codeintel-license-compliance-checker</pre><div class="flag"><h3>Wrong organisation</h3><p>The repository lives under ShadowGuard-AI. The corrected address is https://github.com/ShadowGuard-AI/codeintel-license-compliance-checker. The README gives no next step after the clone. None is added here.</p></div></section>
+<section class="plate" id="s4"><h2>Invocation, true form</h2><pre>python3 main.py PROJECT_PATH [--output_format text|json] [--log_level LEVEL]</pre><p>The README prints an executable name followed by the word params in brackets. That line omits the required project path. It cannot be run as shown.</p></section>
+<section class="plate" id="s5"><h2>Arguments, in parser order</h2><div class="entry"><b>project_path</b><span>Path to the project directory. Required. Positional.</span></div><div class="entry"><b>--output_format</b><span>text or json. Default text.</span></div><div class="entry"><b>--log_level</b><span>DEBUG, INFO, WARNING, ERROR, or CRITICAL. Default INFO.</span></div><div class="entry"><b>-h</b><span>Shows help and exits.</span></div><p>A project path that is not a directory is refused. Exit 1.</p></section>
+<section class="plate" id="s6"><h2>Flagged Means Look</h2><p>UNKNOWN is flagged, with the reason that no licence was reported for the package. An empty licence is flagged the same way. A licence string containing AGPL, LGPL, GPL, MPL, EPL, or CDDL is flagged, and the reason given names the family found and advises checking its conditions before use. Flagged means look. It does not mean forbidden. It does not mean judged.</p><div class="callout"><h3>A Mention Is Flagged Like a Grant</h3><p>Matching is by substring. A licence text that merely mentions one of those names while saying it does not apply is flagged all the same. The code states this choice plainly. A human sorts the mention from the grant.</p></div></section>
+<section class="plate" id="s7"><h2>The Count at the Foot</h2><p>Text form: one block per package, with package, version, licence, homepage, and a flagged line where a flag applies. Last line: a count, Flagged, so many of so many packages need a compliance look, with the flagged names listed after it. Json form: one entry per package, carrying its details and a compliance flag field, held in the code as compliance_flag, holding either the reason or nothing, with a final count entry added under its own key. The report is printed even where packages are flagged. The run then exits normally. A flag never becomes an exit code.</p></section>
+<section class="plate" id="s8"><h2>Licence entry, last in the book</h2><pre>Copyright (c) ShadowStrikeHQ</pre><p>Printed as printed and flagged. Wrong organisation, second time in the same short file. No licence is named in the README. No terms are given. The absence is recorded. It is not filled.</p></section>
+<section class="plate"><h2>Preserved record, verbatim lines and code facts</h2>
+<p># codeintel-License-Compliance-Checker</p>
+<p>Scans a project's dependencies and lists their licenses, highlighting potential compliance issues. An entry is flagged in the report when its license is UNKNOWN (pip reported no license) or when its license string contains a copyleft family name: GPL, LGPL, AGPL, MPL, EPL, or CDDL. The report ends with a summary count of flagged entries. Flagging marks an entry for a human compliance look, it is not a judgement that the license cannot be used. - Focused on Tools for static code analysis, vulnerability scanning, and code quality assurance</p>
+<p>## Install</p>
+<p>`git clone https://github.com/ShadowStrikeHQ/codeintel-license-compliance-checker`</p>
+<p>## Usage</p>
+<p>`./codeintel-license-compliance-checker [params]`</p>
+<p>## Parameters</p>
+<p>- `-h`: Show help message and exit</p>
+<p>- `--output_format`: No description provided</p>
+<p>- `--log_level`: Set the logging level.</p>
+<p>## License</p>
+<p>Copyright (c) ShadowStrikeHQ</p>
+<p>python3 main.py PROJECT_PATH [--output_format text|json] [--log_level LEVEL]</p>
+<p>https://github.com/ShadowGuard-AI/codeintel-license-compliance-checker</p>
+<p>No Requirements File Means a Report About This Machine</p>
+<p>A Mention Is Flagged Like a Grant</p>
+<p>List the Licences</p>
+<p>Set the Report Form</p>
+<p>Set the Log Level</p>
+<p>Show Help</p>
+<p>Entered in the Book</p>
+<p>Names from the Requirements File</p>
+<p>No File, Then the Environment</p>
+<p>One Package at a Time</p>
+<p>Flagged Means Look</p>
+<p>The Count at the Foot</p>
+<p>pip freeze</p>
+<p>License-Expression</p>
+<p>compliance_flag</p>
+</section>
 </main>
-<footer>
-  <p>Codeintel License Compliance Checker is one of my projects. This page was written
-  from the repo itself on 2026-10-30: the counts are the
-  repo's counts, the code is the repo's code, and the gaps are the
-  repo's gaps.</p>
-</footer>
+<footer><p>Theme record for ShadowGuard-AI/codeintel-license-compliance-checker. Fonts are embedded from the fonts folder beside this page, each under the SIL Open Font License 1.1.</p></footer>
 </body>
 </html>
